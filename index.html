@@ -1,0 +1,145 @@
+<style>
+  body { margin: 0; padding: 16px; font-family: Georgia, serif; background: #fff; }
+  svg { display: block; margin: 0 auto; max-width: 680px; width: 100%; }
+  .reef-node { cursor: pointer; }
+  .reef-node:hover .glow-target { filter: drop-shadow(0 0 9px rgba(13,148,136,0.7)); }
+  .arrow-node { cursor: pointer; }
+  .arrow-node:hover .glow-arrow { filter: drop-shadow(0 0 7px rgba(29,78,216,0.8)); }
+  .frag-node { cursor: pointer; }
+  .frag-node:hover .glow-frag { filter: drop-shadow(0 0 7px rgba(4,120,87,0.8)); }
+  .iso-node { cursor: pointer; }
+  .iso-node:hover .glow-iso { filter: drop-shadow(0 0 8px rgba(156,163,175,0.8)); }
+  .dash-node { cursor: pointer; }
+  .dash-node:hover .glow-dash { filter: drop-shadow(0 0 5px rgba(156,163,175,0.8)); }
+
+  #popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.32);
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+  }
+  #popup.open { display: flex; }
+  #popup-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 26px 30px;
+    max-width: 340px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    position: relative;
+  }
+  #popup-bar { height: 5px; border-radius: 3px; margin-bottom: 14px; }
+  #popup-title { font-size: 16px; font-weight: 700; margin: 0 0 10px; color: #1a1a1a; }
+  #popup-body { font-size: 13.5px; line-height: 1.68; color: #333; margin: 0; }
+  #popup-close {
+    position: absolute; top: 13px; right: 16px;
+    font-size: 19px; cursor: pointer; color: #888;
+    background: none; border: none; padding: 0; line-height: 1;
+  }
+  #popup-close:hover { color: #333; }
+  .hint { font-size: 11px; color: #9ca3af; font-style: italic; text-align: center; margin-top: 6px; }
+</style>
+
+<div id="popup" onclick="closePopup(event)">
+  <div id="popup-box">
+    <button id="popup-close" onclick="closePopup()">&#x2715;</button>
+    <div id="popup-bar"></div>
+    <p id="popup-title"></p>
+    <p id="popup-body"></p>
+  </div>
+</div>
+
+<svg viewBox="0 0 680 505" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1d4ed8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#047857" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <rect width="680" height="505" fill="white"/>
+
+  <!-- TITLE -->
+  <text x="340" y="38" text-anchor="middle" font-size="18" font-weight="bold" fill="#111827">Coral Reef Resilience</text>
+
+  <!-- CONNECTED PANEL -->
+  <rect x="25" y="55" width="630" height="237" rx="10" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1"/>
+  <text x="340" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#0f766e">Connected Reef Network</text>
+
+  <!-- Seafloor -->
+  <line x1="35" y1="272" x2="645" y2="272" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- HEALTHY REEF -->
+  <g class="reef-node" onclick="openPopup('Healthy Reef','This reef is structurally intact and biologically active. It produces planula larvae — the free-swimming offspring of coral polyps — that are released into the water column and carried by ocean currents toward neighboring reefs.','#0d9488')">
+    <path class="glow-target" d="M45,272 L45,215 L65,192 L85,205 L105,185 L125,200 L145,182 L165,195 L185,182 L205,195 L225,185 L235,195 L235,272 Z"
+          fill="#0d9488" stroke="#0f766e" stroke-width="1.5" stroke-linejoin="round"/>
+    <text x="140" y="248" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Healthy reef</text>
+  </g>
+
+  <!-- DAMAGED REEF -->
+  <g class="reef-node" onclick="openPopup('Damaged Reef','A storm has broken coral structures, leaving a reduced and fragmented reef. Recovery is underway through two simultaneous pathways: regrowth from surviving polyp fragments and arrival of larvae from the connected healthy reef nearby.','#0ea5e9')">
+    <path class="glow-target" d="M415,272 L415,225 L430,212 L445,225 L460,212 L475,225 L495,195 L515,210 L535,195 L555,210 L568,200 L585,212 L585,272 Z"
+          fill="#bae6fd" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/>
+    <text x="500" y="252" text-anchor="middle" font-size="12" font-weight="bold" fill="#0c4a6e">Damaged reef</text>
+  </g>
+
+  <!-- LARVAL SETTLEMENT ARROW -->
+  <g class="arrow-node" onclick="openPopup('Larval Settlement','Planula larvae drift with ocean currents but are not entirely passive. They respond to chemical signals released by crustose coralline algae and to the acoustic signatures of healthy reefs — the sounds of fish and invertebrates — which increase the probability of settling on suitable living substrate.','#1d4ed8')">
+    <path class="glow-arrow" d="M237,188 C275,148 378,148 413,200" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arr-blue)"/>
+    <text x="325" y="136" text-anchor="middle" font-size="11" fill="#1d4ed8">Larval settlement</text>
+  </g>
+
+  <!-- FRAGMENT REGROWTH -->
+  <g class="frag-node" onclick="openPopup('Fragment Regrowth','Coral polyps are remarkably resilient. When a storm breaks coral branches, surviving fragments can reattach to the substrate and resume growth. A single fragment retains all the genetic material and cellular machinery needed to rebuild a full coral colony over time.','#047857')">
+    <line class="glow-frag" x1="460" y1="222" x2="460" y2="196" stroke="#047857" stroke-width="2" marker-end="url(#arr-green)"/>
+    <line class="glow-frag" x1="500" y1="198" x2="500" y2="172" stroke="#047857" stroke-width="2" marker-end="url(#arr-green)"/>
+    <line class="glow-frag" x1="540" y1="205" x2="540" y2="179" stroke="#047857" stroke-width="2" marker-end="url(#arr-green)"/>
+    <text x="500" y="162" text-anchor="middle" font-size="11" fill="#047857">Fragment regrowth</text>
+  </g>
+
+  <!-- ISOLATED PANEL -->
+  <rect x="25" y="300" width="630" height="162" rx="10" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="340" y="323" text-anchor="middle" font-size="13" font-weight="bold" fill="#6b7280">Isolated Reef: Limited Recovery</text>
+
+  <!-- Seafloor -->
+  <line x1="35" y1="442" x2="645" y2="442" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- ISOLATED REEF -->
+  <g class="iso-node" onclick="openPopup('Isolated Reef','Without a nearby healthy reef, this damaged reef receives no larval input from outside. Recovery depends entirely on surviving fragments, which may be too few or too widely scattered. Without the renewal that connectivity provides, recovery is slow and may be incomplete.','#6b7280')">
+    <path class="glow-iso" d="M230,442 L230,398 L250,376 L270,390 L290,372 L310,385 L330,368 L350,382 L370,368 L390,382 L410,373 L430,388 L450,398 L450,442 Z"
+          fill="#9ca3af" stroke="#6b7280" stroke-width="1.5" stroke-linejoin="round"/>
+    <text x="340" y="422" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Isolated reef</text>
+  </g>
+
+  <!-- DASHED NO-SOURCE LINES -->
+  <g class="dash-node" onclick="openPopup('No Larval Source','The dashed lines represent an absent connection. There is no neighboring reef close enough to supply larvae. This is what isolation means ecologically: not just physical distance, but the severing of the renewal pathways that resilience depends on.','#9ca3af')">
+    <line class="glow-dash" x1="78" y1="410" x2="228" y2="410" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="78" y="402" text-anchor="start" font-size="11" fill="#9ca3af" font-style="italic">No larval source</text>
+    <line class="glow-dash" x1="452" y1="410" x2="610" y2="410" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="610" y="402" text-anchor="end" font-size="11" fill="#9ca3af" font-style="italic">No larval source</text>
+  </g>
+
+  <!-- TAGLINE -->
+  <text x="105" y="487" text-anchor="start" font-size="11" font-style="italic" fill="#666">Environmental Science through Nature's Genius</text>
+</svg>
+
+<p class="hint">Click any element to learn more</p>
+
+<script>
+  function openPopup(title, body, color) {
+    document.getElementById('popup-title').textContent = title;
+    document.getElementById('popup-body').textContent = body;
+    document.getElementById('popup-bar').style.background = color;
+    document.getElementById('popup').classList.add('open');
+  }
+  function closePopup(e) {
+    if (!e || e.target === document.getElementById('popup') || e.target === document.getElementById('popup-close')) {
+      document.getElementById('popup').classList.remove('open');
+    }
+  }
+</script>
